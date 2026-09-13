@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+.vscode/
+.idea/
+*.log
+
+# Intermediate/raw Spotify datasets
+data/spotify_data.csv
+data/spotify_cleaned.csv
