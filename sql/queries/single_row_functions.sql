@@ -1,273 +1,229 @@
--- ============================================================
--- MUSIC STREAMING PLATFORM
--- DA2 - SINGLE-ROW FUNCTIONS
--- ============================================================
-
-SET LINESIZE 180
-SET PAGESIZE 50
+SET LINESIZE 150
+SET PAGESIZE 100
 SET WRAP OFF
 
+PROMPT
+PROMPT ========================================
+PROMPT Q1. Convert artist names to uppercase
+PROMPT ========================================
 
--- ============================================================
--- 1. UPPER()
--- Display artist names in uppercase
--- ============================================================
-
-SELECT
-    Artist_id,
-    Name,
-    UPPER(Name) AS Artist_Name_Upper
+SELECT Name, UPPER(Name) AS UPPER_NAME
 FROM ARTIST
-FETCH FIRST 20 ROWS ONLY;
+FETCH FIRST 10 ROWS ONLY;
 
 
--- ============================================================
--- 2. LOWER()
--- Display user email addresses in lowercase
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q2. Convert artist names to lowercase
+PROMPT ========================================
+
+SELECT Name, LOWER(Name) AS LOWER_NAME
+FROM ARTIST
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q3. Convert song titles to proper case
+PROMPT ========================================
+
+SELECT Title, INITCAP(Title) AS FORMATTED_TITLE
+FROM SONG
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q4. Find the length of song titles
+PROMPT ========================================
+
+SELECT Title, LENGTH(Title) AS TITLE_LENGTH
+FROM SONG
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT ==================================================
+PROMPT Q5. Extract the first 10 characters of song titles
+PROMPT ==================================================
+
+SELECT Title, SUBSTR(Title, 1, 10) AS FIRST_10_CHARACTERS
+FROM SONG
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT =================================================
+PROMPT Q6. Find the position of letter A in artist names
+PROMPT =================================================
+
+SELECT Name, INSTR(UPPER(Name), 'A') AS POSITION_OF_A
+FROM ARTIST
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q7. Concatenate artist name and country
+PROMPT ========================================
 
 SELECT
-    User_id,
     Name,
-    LOWER(Email) AS Email_Lower
+    Country,
+    CONCAT(Name, ' - ' || Country) AS ARTIST_LOCATION
+FROM ARTIST
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q8. Round song duration in seconds
+PROMPT ========================================
+
+SELECT
+    Title,
+    ROUND(Duration / 1000) AS DURATION_SECONDS
+FROM SONG
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q9. Truncate song duration to seconds
+PROMPT ========================================
+
+SELECT
+    Title,
+    TRUNC(Duration / 1000) AS DURATION_SECONDS
+FROM SONG
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q10. Find remainder using MOD()
+PROMPT ========================================
+
+SELECT
+    Song_id,
+    MOD(Song_id, 2) AS ID_REMAINDER
+FROM SONG
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT ============================================
+PROMPT Q11. Replace NULL country values using NVL()
+PROMPT ============================================
+
+SELECT
+    Name,
+    NVL(Country, 'Unknown') AS COUNTRY
+FROM ARTIST
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT =============================================
+PROMPT Q12. Use NVL2() to check country availability
+PROMPT =============================================
+
+SELECT
+    Name,
+    NVL2(Country, 'Country Available', 'Country Missing') AS COUNTRY_STATUS
+FROM ARTIST
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT ===============================================
+PROMPT Q13. Display signup dates in DD-MON-YYYY format
+PROMPT ===============================================
+
+SELECT
+    Name,
+    TO_CHAR(Signup_date, 'DD-MON-YYYY') AS SIGNUP_DATE
 FROM USERS
-FETCH FIRST 20 ROWS ONLY;
+FETCH FIRST 10 ROWS ONLY;
 
 
--- ============================================================
--- 3. INITCAP()
--- Convert names to proper case
--- ============================================================
-
-SELECT
-    User_id,
-    Name,
-    INITCAP(Name) AS Formatted_Name
-FROM USERS
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 4. LENGTH()
--- Find the length of song titles
--- ============================================================
+PROMPT
+PROMPT =====================================================
+PROMPT Q14. Display payment amounts with currency formatting
+PROMPT =====================================================
 
 SELECT
-    Song_id,
-    Title,
-    LENGTH(Title) AS Title_Length
-FROM SONG
-FETCH FIRST 20 ROWS ONLY;
+    Payment_id,
+    TO_CHAR(Amount, '999,999.00') AS FORMATTED_AMOUNT
+FROM PAYMENT
+FETCH FIRST 10 ROWS ONLY;
 
 
--- ============================================================
--- 5. SUBSTR()
--- Display first 10 characters of song titles
--- ============================================================
-
-SELECT
-    Song_id,
-    Title,
-    SUBSTR(Title, 1, 10) AS Short_Title
-FROM SONG
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 6. INSTR()
--- Find the position of the character 'a'
--- in artist names
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q15. Convert a string into a date
+PROMPT ========================================
 
 SELECT
-    Artist_id,
-    Name,
-    INSTR(LOWER(Name), 'a') AS Position_Of_A
-FROM ARTIST
-WHERE INSTR(LOWER(Name), 'a') > 0
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 7. CONCAT()
--- Combine artist name with country
--- ============================================================
-
-SELECT
-    Artist_id,
-    CONCAT(Name, ' - ') || Country AS Artist_Country
-FROM ARTIST
-WHERE Country IS NOT NULL
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 8. ROUND()
--- Convert song duration from milliseconds to minutes
--- ============================================================
-
-SELECT
-    Song_id,
-    Title,
-    ROUND(Duration / 60000, 2) AS Duration_Minutes
-FROM SONG
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 9. TRUNC()
--- Truncate song duration to whole minutes
--- ============================================================
-
-SELECT
-    Song_id,
-    Title,
-    TRUNC(Duration / 60000) AS Whole_Minutes
-FROM SONG
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 10. MOD()
--- Find remaining seconds after complete minutes
--- ============================================================
-
-SELECT
-    Song_id,
-    Title,
-    MOD(TRUNC(Duration / 1000), 60) AS Remaining_Seconds
-FROM SONG
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 11. NVL()
--- Replace missing artist country with 'Unknown'
--- ============================================================
-
-SELECT
-    Artist_id,
-    Name,
-    NVL(Country, 'Unknown') AS Artist_Country
-FROM ARTIST
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 12. NVL2()
--- Check whether artist biography is available
--- ============================================================
-
-SELECT
-    Artist_id,
-    Name,
-    NVL2(
-        Bio,
-        'Biography Available',
-        'Biography Not Available'
-    ) AS Biography_Status
-FROM ARTIST
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 13. TO_CHAR() - DATE
--- Format user signup date
--- ============================================================
-
-SELECT
-    User_id,
-    Name,
-    TO_CHAR(Signup_date, 'DD-MON-YYYY') AS Signup_Date
-FROM USERS
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 14. TO_CHAR() - NUMBER
--- Format song duration in minutes
--- ============================================================
-
-SELECT
-    Song_id,
-    Title,
-    TO_CHAR(
-        ROUND(Duration / 60000, 2),
-        '990.00'
-    ) AS Duration_Minutes
-FROM SONG
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 15. TO_CHAR() - DATE WITH MONTH
--- ============================================================
-
-SELECT
-    User_id,
-    Name,
-    TO_CHAR(Signup_date, 'DD MONTH YYYY') AS Formatted_Signup_Date
-FROM USERS
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 16. TO_DATE()
--- Convert a character value into an Oracle DATE
--- ============================================================
-
-SELECT
-    TO_DATE('13-SEP-2026', 'DD-MON-YYYY') AS Converted_Date
+    TO_DATE('13-SEP-2026', 'DD-MON-YYYY') AS CONVERTED_DATE
 FROM DUAL;
 
 
--- ============================================================
--- 17. ADD_MONTHS()
--- Find subscription renewal date after 1 month
--- ============================================================
-
-SELECT
-    Subscription_id,
-    User_id,
-    Start_date,
-    ADD_MONTHS(Start_date, 1) AS One_Month_Later
-FROM SUBSCRIPTION
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 18. MONTHS_BETWEEN()
--- Calculate subscription duration in months
--- ============================================================
-
-SELECT
-    Subscription_id,
-    User_id,
-    ROUND(
-        MONTHS_BETWEEN(End_date, Start_date),
-        2
-    ) AS Subscription_Months
-FROM SUBSCRIPTION
-FETCH FIRST 20 ROWS ONLY;
-
-
--- ============================================================
--- 19. LAST_DAY()
--- Find the last day of the subscription start month
--- ============================================================
+PROMPT
+PROMPT =============================================
+PROMPT Q16. Add 3 months to subscription start dates
+PROMPT =============================================
 
 SELECT
     Subscription_id,
     Start_date,
-    LAST_DAY(Start_date) AS Month_End
+    ADD_MONTHS(Start_date, 3) AS DATE_AFTER_3_MONTHS
 FROM SUBSCRIPTION
-FETCH FIRST 20 ROWS ONLY;
+FETCH FIRST 10 ROWS ONLY;
 
 
--- ============================================================
--- 20. SYSDATE
--- Display current database date
--- ============================================================
+PROMPT
+PROMPT ===========================================
+PROMPT Q17. Find months between subscription dates
+PROMPT ===========================================
 
-SELECT SYSDATE AS Current_Database_Date
+SELECT
+    Subscription_id,
+    ROUND(MONTHS_BETWEEN(End_date, Start_date), 2)
+        AS SUBSCRIPTION_MONTHS
+FROM SUBSCRIPTION
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT ======================================================
+PROMPT Q18. Find the last day of the subscription start month
+PROMPT ======================================================
+
+SELECT
+    Subscription_id,
+    Start_date,
+    LAST_DAY(Start_date) AS LAST_DAY_OF_MONTH
+FROM SUBSCRIPTION
+FETCH FIRST 10 ROWS ONLY;
+
+
+PROMPT
+PROMPT ===============================================
+PROMPT Q19. Display the current database date and time
+PROMPT ===============================================
+
+SELECT SYSDATE AS CURRENT_DATABASE_DATE
 FROM DUAL;
+
+
+PROMPT
+PROMPT =======================================================
+PROMPT Q20. Convert song duration from milliseconds to minutes
+PROMPT =======================================================
+
+SELECT
+    Title,
+    ROUND(Duration / 60000, 2) AS DURATION_MINUTES
+FROM SONG
+FETCH FIRST 10 ROWS ONLY;

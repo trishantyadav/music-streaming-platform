@@ -1,305 +1,159 @@
--- ============================================================
--- MUSIC STREAMING PLATFORM
--- DA2 - SUBQUERIES
--- ============================================================
+SET LINESIZE 150
+SET PAGESIZE 100
+SET WRAP OFF
 
-SET LINESIZE 180
-SET PAGESIZE 50
-SET WRAP OFF;
-
-
--- ============================================================
--- 1. Single-row subquery
--- Songs longer than the average song duration
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q1. Find songs longer than the average song duration
+PROMPT ========================================
 
 SELECT Song_id, Title, Duration
 FROM SONG
 WHERE Duration > (
     SELECT AVG(Duration)
     FROM SONG
-);
+)
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 2. Single-row subquery
--- Songs shorter than the average duration
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q2. Find users who have given at least one rating
+PROMPT ========================================
 
-SELECT Song_id, Title, Duration
-FROM SONG
-WHERE Duration < (
-    SELECT AVG(Duration)
-    FROM SONG
-);
-
-
--- ============================================================
--- 3. Subquery with MAX()
--- Longest song
--- ============================================================
-
-SELECT Song_id, Title, Duration
-FROM SONG
-WHERE Duration = (
-    SELECT MAX(Duration)
-    FROM SONG
-);
-
-
--- ============================================================
--- 4. Subquery with MIN()
--- Shortest song
--- ============================================================
-
-SELECT Song_id, Title, Duration
-FROM SONG
-WHERE Duration = (
-    SELECT MIN(Duration)
-    FROM SONG
-);
-
-
--- ============================================================
--- 5. Subquery with AVG()
--- Payments above average payment
--- ============================================================
-
-SELECT Payment_id, Subscription_id, Amount
-FROM PAYMENT
-WHERE Amount > (
-    SELECT AVG(Amount)
-    FROM PAYMENT
-);
-
-
--- ============================================================
--- 6. IN subquery
--- Songs belonging to albums created by artists
--- ============================================================
-
-SELECT Song_id, Title, Album_id
-FROM SONG
-WHERE Album_id IN (
-    SELECT Album_id
-    FROM ALBUM
-    WHERE Artist_id IN (
-        SELECT Artist_id
-        FROM ARTIST
-    )
-);
-
-
--- ============================================================
--- 7. IN subquery
--- Premium users who have subscriptions
--- ============================================================
-
-SELECT User_id
-FROM PREMIUM_USER
+SELECT User_id, Name
+FROM USERS
 WHERE User_id IN (
     SELECT User_id
-    FROM SUBSCRIPTION
-);
+    FROM RATING
+)
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 8. NOT IN subquery
--- Users who have never created a playlist
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q3. Find users who have never given a rating
+PROMPT ========================================
 
 SELECT User_id, Name
 FROM USERS
 WHERE User_id NOT IN (
     SELECT User_id
-    FROM PLAYLIST
-);
+    FROM RATING
+)
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 9. IN subquery
--- Songs that have received ratings
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q4. Find songs that have received the maximum rating
+PROMPT ========================================
 
 SELECT Song_id, Title
 FROM SONG
 WHERE Song_id IN (
     SELECT Song_id
     FROM RATING
-);
-
-
--- ============================================================
--- 10. NOT IN subquery
--- Songs that have never been rated
--- ============================================================
-
-SELECT Song_id, Title
-FROM SONG
-WHERE Song_id NOT IN (
-    SELECT Song_id
-    FROM RATING
-);
-
-
--- ============================================================
--- 11. ANY
--- Songs longer than at least one song rated 5
--- ============================================================
-
-SELECT Song_id, Title, Duration
-FROM SONG
-WHERE Duration > ANY (
-    SELECT s.Duration
-    FROM SONG s
-    JOIN RATING r
-        ON s.Song_id = r.Song_id
-    WHERE r.Rating = 5
-);
-
-
--- ============================================================
--- 12. ALL
--- Songs longer than every song rated 5
--- ============================================================
-
-SELECT Song_id, Title, Duration
-FROM SONG
-WHERE Duration > ALL (
-    SELECT s.Duration
-    FROM SONG s
-    JOIN RATING r
-        ON s.Song_id = r.Song_id
-    WHERE r.Rating = 5
-);
-
-
--- ============================================================
--- 13. EXISTS
--- Users who have at least one playlist
--- ============================================================
-
-SELECT u.User_id, u.Name
-FROM USERS u
-WHERE EXISTS (
-    SELECT 1
-    FROM PLAYLIST p
-    WHERE p.User_id = u.User_id
-);
-
-
--- ============================================================
--- 14. NOT EXISTS
--- Users without playlists
--- ============================================================
-
-SELECT u.User_id, u.Name
-FROM USERS u
-WHERE NOT EXISTS (
-    SELECT 1
-    FROM PLAYLIST p
-    WHERE p.User_id = u.User_id
-);
-
-
--- ============================================================
--- 15. EXISTS
--- Songs that have at least one rating
--- ============================================================
-
-SELECT s.Song_id, s.Title
-FROM SONG s
-WHERE EXISTS (
-    SELECT 1
-    FROM RATING r
-    WHERE r.Song_id = s.Song_id
-);
-
-
--- ============================================================
--- 16. Correlated subquery
--- Ratings higher than the average rating of that song
--- ============================================================
-
-SELECT r.Rating_id, r.User_id, r.Song_id, r.Rating
-FROM RATING r
-WHERE r.Rating > (
-    SELECT AVG(r2.Rating)
-    FROM RATING r2
-    WHERE r2.Song_id = r.Song_id
-);
-
-
--- ============================================================
--- 17. Correlated subquery
--- Users who have listened to more than the average number
--- of listening records per user
--- ============================================================
-
-SELECT lh.User_id, COUNT(*) AS Listening_Count
-FROM LISTENING_HISTORY lh
-GROUP BY lh.User_id
-HAVING COUNT(*) > (
-    SELECT AVG(user_count)
-    FROM (
-        SELECT COUNT(*) AS user_count
-        FROM LISTENING_HISTORY
-        GROUP BY User_id
+    WHERE Rating = (
+        SELECT MAX(Rating)
+        FROM RATING
     )
-);
+)
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 18. Subquery with GROUP BY
--- Artists having more albums than the average artist
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q5. Find artists who have released more albums than average
+PROMPT ========================================
 
-SELECT Artist_id, COUNT(*) AS Album_Count
+SELECT Artist_id, COUNT(*) AS NUMBER_OF_ALBUMS
 FROM ALBUM
 GROUP BY Artist_id
 HAVING COUNT(*) > (
-    SELECT AVG(album_count)
+    SELECT AVG(ALBUM_COUNT)
     FROM (
-        SELECT COUNT(*) AS album_count
+        SELECT COUNT(*) AS ALBUM_COUNT
         FROM ALBUM
         GROUP BY Artist_id
     )
 );
 
 
--- ============================================================
--- 19. Nested subquery
--- Songs belonging to the artist with the most albums
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q6. Find the user with the highest number of listening records
+PROMPT ========================================
 
-SELECT Song_id, Title, Album_id
-FROM SONG
-WHERE Album_id IN (
-    SELECT Album_id
-    FROM ALBUM
-    WHERE Artist_id = (
-        SELECT Artist_id
-        FROM (
-            SELECT Artist_id, COUNT(*) AS Album_Count
-            FROM ALBUM
-            GROUP BY Artist_id
-            ORDER BY Album_Count DESC
-        )
-        FETCH FIRST 1 ROW ONLY
+SELECT User_id, COUNT(*) AS LISTENING_COUNT
+FROM LISTENING_HISTORY
+GROUP BY User_id
+HAVING COUNT(*) = (
+    SELECT MAX(LISTENING_COUNT)
+    FROM (
+        SELECT COUNT(*) AS LISTENING_COUNT
+        FROM LISTENING_HISTORY
+        GROUP BY User_id
     )
 );
 
 
--- ============================================================
--- 20. Nested subquery
--- Highest-rated songs whose average rating is >= 4
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q7. Find songs that have never been rated
+PROMPT ========================================
 
 SELECT Song_id, Title
 FROM SONG
-WHERE Song_id IN (
+WHERE Song_id NOT IN (
     SELECT Song_id
     FROM RATING
-    GROUP BY Song_id
-    HAVING AVG(Rating) >= 4
+)
+FETCH FIRST 20 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q8. Find users whose listening count is above average
+PROMPT ========================================
+
+SELECT User_id, COUNT(*) AS LISTENING_COUNT
+FROM LISTENING_HISTORY
+GROUP BY User_id
+HAVING COUNT(*) > (
+    SELECT AVG(USER_COUNT)
+    FROM (
+        SELECT COUNT(*) AS USER_COUNT
+        FROM LISTENING_HISTORY
+        GROUP BY User_id
+    )
 );
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q9. Find songs whose duration is greater than the minimum duration
+PROMPT ========================================
+
+SELECT Song_id, Title, Duration
+FROM SONG
+WHERE Duration > (
+    SELECT MIN(Duration)
+    FROM SONG
+)
+FETCH FIRST 20 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q10. Find users who have rated songs with rating 5
+PROMPT ========================================
+
+SELECT User_id, Name
+FROM USERS
+WHERE User_id IN (
+    SELECT User_id
+    FROM RATING
+    WHERE Rating = 5
+)
+FETCH FIRST 20 ROWS ONLY;

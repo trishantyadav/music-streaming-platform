@@ -1,0 +1,5 @@
+pandas
+oracledb
+Faker
+python-dotenv
+streamlit

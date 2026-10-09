@@ -1,197 +1,273 @@
--- ============================================================
--- MUSIC STREAMING PLATFORM
--- DA2 - BASIC SQL QUERIES AND OPERATORS
--- ============================================================
+SET LINESIZE 150
+SET PAGESIZE 100
+SET WRAP OFF
 
--- ============================================================
--- 1. SELECT ALL USERS
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q1. Display all users
+PROMPT ========================================
 
 SELECT *
 FROM USERS;
 
 
--- ============================================================
--- 2. SELECT SPECIFIC COLUMNS
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q2. Display selected user information
+PROMPT ========================================
 
-SELECT User_id, Name, Email, Country
-FROM USERS;
+SELECT
+    User_id,
+    Name,
+    Email,
+    Country
+FROM USERS
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 3. DISTINCT COUNTRIES
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q3. Display all distinct countries of users
+PROMPT ========================================
 
 SELECT DISTINCT Country
 FROM USERS
 ORDER BY Country;
 
 
--- ============================================================
--- 4. COMPARISON OPERATOR
--- Users with ID greater than 900
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q4. Find songs with duration greater than 200000 milliseconds
+PROMPT ========================================
 
-SELECT User_id, Name, Country
-FROM USERS
-WHERE User_id > 900;
-
-
--- ============================================================
--- 5. COMPARISON OPERATOR
--- Songs longer than 5 minutes
--- Duration is stored in milliseconds
--- 5 minutes = 300000 milliseconds
--- ============================================================
-
-SELECT Song_id, Title, Duration
+SELECT
+    Song_id,
+    Title,
+    Duration
 FROM SONG
-WHERE Duration > 300000;
+WHERE Duration > 200000
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 6. EQUALITY OPERATOR
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q5. Find songs with duration less than 180000 milliseconds
+PROMPT ========================================
 
-SELECT User_id, Name, Country
-FROM USERS
-WHERE Country = 'India';
-
-
--- ============================================================
--- 7. NOT EQUAL OPERATOR
--- ============================================================
-
-SELECT User_id, Name, Country
-FROM USERS
-WHERE Country <> 'India';
-
-
--- ============================================================
--- 8. BETWEEN OPERATOR
--- Songs between 3 and 5 minutes
--- ============================================================
-
-SELECT Song_id, Title, Duration
+SELECT
+    Song_id,
+    Title,
+    Duration
 FROM SONG
-WHERE Duration BETWEEN 180000 AND 300000;
+WHERE Duration < 180000
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 9. IN OPERATOR
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q6. Find songs with duration exactly 204346 milliseconds
+PROMPT ========================================
 
-SELECT User_id, Name, Country
+SELECT
+    Song_id,
+    Title,
+    Duration
+FROM SONG
+WHERE Duration = 204346;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q7. Find songs whose duration is not 204346 milliseconds
+PROMPT ========================================
+
+SELECT
+    Song_id,
+    Title,
+    Duration
+FROM SONG
+WHERE Duration <> 204346
+FETCH FIRST 20 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q8. Find songs with duration between 180000 and 220000 milliseconds
+PROMPT ========================================
+
+SELECT
+    Song_id,
+    Title,
+    Duration
+FROM SONG
+WHERE Duration BETWEEN 180000 AND 220000
+FETCH FIRST 20 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q9. Find users from selected countries using IN
+PROMPT ========================================
+
+SELECT
+    User_id,
+    Name,
+    Country
 FROM USERS
-WHERE Country IN ('India', 'USA', 'UK');
+WHERE Country IN ('India', 'USA', 'Canada')
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 10. AND OPERATOR
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q10. Find users who are from India AND have an email
+PROMPT ========================================
 
-SELECT User_id, Name, Country
-FROM USERS
-WHERE User_id > 500
-AND Country = 'India';
-
-
--- ============================================================
--- 11. OR OPERATOR
--- ============================================================
-
-SELECT User_id, Name, Country
+SELECT
+    User_id,
+    Name,
+    Email,
+    Country
 FROM USERS
 WHERE Country = 'India'
-OR Country = 'USA';
+AND Email IS NOT NULL
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 12. NOT OPERATOR
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q11. Find users from India OR USA
+PROMPT ========================================
 
-SELECT User_id, Name, Country
+SELECT
+    User_id,
+    Name,
+    Country
 FROM USERS
-WHERE NOT Country = 'India';
+WHERE Country = 'India'
+OR Country = 'USA'
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 13. LIKE - NAMES STARTING WITH A
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q12. Find users NOT from India
+PROMPT ========================================
 
-SELECT User_id, Name
+SELECT
+    User_id,
+    Name,
+    Country
 FROM USERS
-WHERE Name LIKE 'A%';
+WHERE NOT Country = 'India'
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 14. LIKE - NAMES ENDING WITH A
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q13. Find artists whose names start with A
+PROMPT ========================================
 
-SELECT User_id, Name
-FROM USERS
-WHERE Name LIKE '%a';
-
-
--- ============================================================
--- 15. LIKE - NAMES CONTAINING 'an'
--- ============================================================
-
-SELECT User_id, Name
-FROM USERS
-WHERE LOWER(Name) LIKE '%an%';
-
-
--- ============================================================
--- 16. LIKE - EMAILS FROM A DOMAIN
--- ============================================================
-
-SELECT User_id, Name, Email
-FROM USERS
-WHERE Email LIKE '%@gmail.com';
-
-
--- ============================================================
--- 17. NULL CHECK
--- ============================================================
-
-SELECT Artist_id, Name, Country
+SELECT
+    Artist_id,
+    Name
 FROM ARTIST
-WHERE Country IS NULL;
+WHERE Name LIKE 'A%'
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 18. NOT NULL CHECK
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q14. Find artists whose names end with a
+PROMPT ========================================
 
-SELECT Artist_id, Name, Country
+SELECT
+    Artist_id,
+    Name
 FROM ARTIST
-WHERE Country IS NOT NULL;
+WHERE LOWER(Name) LIKE '%a'
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 19. ARITHMETIC OPERATOR
--- Convert song duration from milliseconds to minutes
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q15. Find songs containing the word love
+PROMPT ========================================
+
+SELECT
+    Song_id,
+    Title
+FROM SONG
+WHERE LOWER(Title) LIKE '%love%'
+FETCH FIRST 20 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q16. Find artists whose country information is missing
+PROMPT ========================================
+
+SELECT
+    Artist_id,
+    Name,
+    Country
+FROM ARTIST
+WHERE Country IS NULL
+FETCH FIRST 20 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q17. Find artists whose country information is available
+PROMPT ========================================
+
+SELECT
+    Artist_id,
+    Name,
+    Country
+FROM ARTIST
+WHERE Country IS NOT NULL
+FETCH FIRST 20 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q18. Display song duration converted from milliseconds to seconds
+PROMPT ========================================
 
 SELECT
     Song_id,
     Title,
     Duration,
-    ROUND(Duration / 60000, 2) AS Duration_Minutes
-FROM SONG;
+    Duration / 1000 AS DURATION_SECONDS
+FROM SONG
+FETCH FIRST 20 ROWS ONLY;
 
 
--- ============================================================
--- 20. ARITHMETIC OPERATOR WITH FILTER
--- Songs whose duration is greater than 4 minutes
--- ============================================================
+PROMPT
+PROMPT ========================================
+PROMPT Q19. Display song duration converted from milliseconds to minutes
+PROMPT ========================================
 
 SELECT
     Song_id,
     Title,
-    ROUND(Duration / 60000, 2) AS Duration_Minutes
+    Duration,
+    ROUND(Duration / 60000, 2) AS DURATION_MINUTES
 FROM SONG
-WHERE Duration / 60000 > 4
-ORDER BY Duration DESC;
+FETCH FIRST 20 ROWS ONLY;
+
+
+PROMPT
+PROMPT ========================================
+PROMPT Q20. Find payments greater than 500
+PROMPT ========================================
+
+SELECT
+    Payment_id,
+    Subscription_id,
+    Amount,
+    Status
+FROM PAYMENT
+WHERE Amount > 500
+FETCH FIRST 20 ROWS ONLY;
